@@ -16,6 +16,7 @@ public class StartClass
 {
 	
 	
+	
 	static JFrame window;
 	
 	static Container container;
@@ -31,6 +32,8 @@ public class StartClass
 	static JLabel imageMessage;
 	
 	static JLabel saveMessage;
+	
+	
 	
 	
 	
@@ -114,16 +117,16 @@ public class StartClass
 			
 			Component[] components = window.getContentPane().getComponents();
 			
-			String folderPath = GUI.findTextFromLabel(components, "Folder Path :");
+			String loadPath = GUI.findTextFromLabel(components, "Folder Path :");
 			
-			boolean textIsBlack = GUI.findComboBoxFromLabel(components, "Text Color :").equals("Black");
+			String textColor = GUI.findComboBoxFromLabel(components, "Text Color :");
 			
 			String savePath = GUI.findTextFromLabel(components, "Save Path :");
 			
 			try
 			{
 				
-				Cleaner.clean(folderPath, textIsBlack, savePath);
+				new CleanerWorker(loadPath, textColor, savePath).execute();
 				
 			} catch (Exception e) {}
 			

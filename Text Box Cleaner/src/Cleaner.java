@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.SwingWorker;
 
 
 
@@ -21,19 +22,12 @@ public class Cleaner
 	
 	
 	
-	
 	public static void main(String[] args) throws Exception
 	{
 		
 		logToConsole = true;
 		
-		
-		
-		bulkClean("D:/MTG Galleries/Karlov Manor/MULTICOLOR (2)/", true);
-		
-		
-		
-		System.out.println(new Date().toString().substring(11, 20) + " INFO:    Done.");
+		bulkClean("D:/MTG Galleries/Karlov Manor/", "Black");
 		
 	}
 	
@@ -41,8 +35,12 @@ public class Cleaner
 	
 	
 	
-	public static void bulkClean(String folderPath, boolean textIsBlack) throws Exception
+	public static void bulkClean(String folderPath, String textColor) throws Exception
 	{
+		
+		System.out.println(new Date().toString().substring(11, 20) + "  INFO:    Starting.");
+		
+		
 		
 		String savePath = (folderPath.endsWith("/") ? folderPath.substring(0, folderPath.length()-1) : folderPath) + " Results/";
 		
@@ -51,17 +49,45 @@ public class Cleaner
 		for (File folder : subFolders)
 		{
 			
-			clean(folder.getAbsolutePath(), textIsBlack, savePath + folder.getName() + ".png");
+			clean(folder.getAbsolutePath(), textColor, savePath + folder.getName() + ".png");
 			
 		}
+
+		
+		
+		System.gc();
+		
+		System.out.println(new Date().toString().substring(11, 20) + "  INFO:    Done.");
+		
 	}
 	
 	
 	
-	public static void clean(String folderPath, boolean textIsBlack, String savePath) throws Exception
+	public static void clean(String loadPath, String textColor, String savePath) throws Exception
 	{
 		
-		List<BufferedImage> images = loadImagesInFolder(folderPath, true);
+		System.out.println(new Date().toString().substring(11, 20) + "  INFO:    Starting.");
+		
+		
+		
+		//Parse text color
+		boolean textIsBlack = false;
+		
+		if (textColor.equals("Black")) textIsBlack = true;
+		
+		else if (!textColor.equals("White"))
+		{
+			
+			log("Could not interpret text color ' " + textColor + " '.", Color.red, "image");
+			
+			return;
+			
+		}
+		
+		
+		
+		//Do the thing we're here for
+		List<BufferedImage> images = loadImagesInFolder(loadPath, true);
 		
 		if (images == null) return;
 		
@@ -71,9 +97,13 @@ public class Cleaner
 		
 		saveImage(result, "", savePath);
 		
+		
+		
+		System.gc();
+		
+		System.out.println(new Date().toString().substring(11, 20) + "  INFO:    Done.");
+		
 	}
-	
-	
 	
 	
 	
@@ -389,7 +419,7 @@ public class Cleaner
 		if (logToConsole)
 		{
 			
-			System.out.println(new Date().toString().substring(11, 20) + (color == Color.black ? " INFO:    " : " ERROR:   " ) + text);
+			System.out.println(new Date().toString().substring(11, 20) + (color == Color.black ? "  INFO:    " : "  ERROR:   " ) + text);
 			
 		}
 		
@@ -430,4 +460,39 @@ public class Cleaner
 			}
 		}
 	}
+}
+
+
+
+
+
+class CleanerWorker extends SwingWorker<Integer, Integer>
+{
+	
+	String loadPath;
+	
+	String textColor;
+	
+	String savePath;
+	
+	CleanerWorker(String loadPath, String textColor, String savePath)
+	{ 
+		
+		this.loadPath = loadPath;
+		
+		this.textColor = textColor;
+		
+		this.savePath = savePath;
+		
+    }
+	
+	@Override
+    protected Integer doInBackground() throws Exception
+    {
+		
+		Cleaner.clean(loadPath, textColor, savePath);
+    	
+    	return 0;
+    	
+    }
 }
