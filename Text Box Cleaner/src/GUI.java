@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -202,11 +203,18 @@ public class GUI
 		
 		JButton button = new JButton(text);
 		
-		button.addActionListener(actionListener);
+		if (actionListener != null) button.addActionListener(actionListener);
 		
 		container.add(button, constraints);
 		
 		return button;
+		
+	}
+	
+	public static JButton addButton(Container container, GridBagConstraints constraints, String text)
+	{
+		
+		return addButton(container, constraints, text, null);
 		
 	}
 	
@@ -316,6 +324,19 @@ public class GUI
 		container.add(bar, constraints);
 		
 		return bar;
+		
+	}
+	
+	
+	
+	public static JColorChooser addColorChooser(Container container, GridBagConstraints constraints)
+	{
+		
+		JColorChooser chooser = new JColorChooser();
+		
+		container.add(chooser, constraints);
+		
+		return chooser;
 		
 	}
 	
@@ -431,6 +452,37 @@ public class GUI
 	
 	
 	
+	public static JColorChooser addLabeledColorChooser(Container container, int x, int y, String labelText, Color defaultColor, boolean labelOnTheLeft, int xPixelText, int xSizeText)
+	{
+		
+		JLabel label = new JLabel(labelText);
+		
+		GridBagConstraints labelConstraints = createConstraints(labelOnTheLeft ? x : x+1, y, 20, 10, 1, 1);
+		
+		container.add(label, labelConstraints);
+		
+		
+		
+		JColorChooser chooser = new JColorChooser();
+		
+		chooser.setColor(defaultColor);
+		
+		GridBagConstraints chooserBoxConstrints = createConstraints(labelOnTheLeft ? x+1 : x, y, xPixelText, 10, xSizeText, 1);
+		
+		container.add(chooser, chooserBoxConstrints);
+		
+		
+		
+		label.setLabelFor(chooser);
+		
+		
+		
+		return chooser;
+		
+	}
+	
+	
+	
 	public static void updateConstraints(Container container, Component component, GridBagConstraints constraints)
 	{
 		
@@ -526,10 +578,9 @@ public class GUI
 				if (label.getText().equals(labelText))
 				{
 					
-					@SuppressWarnings("unchecked")
-					JComboBox<String> box = (JComboBox<String>) label.getLabelFor();
+					JComboBox<?> box = (JComboBox<?>) label.getLabelFor();
 					
-					String text = (String)box.getSelectedItem();
+					String text = String.valueOf(box.getSelectedItem());
 					
 					return text; 
 					
@@ -648,7 +699,7 @@ public class GUI
 	static List<File> getFilesInFolder(String pathName, int getInSubFolders)
 	{
 		
-		if (!pathName.endsWith("/")) pathName = pathName +"/";
+		if (!pathName.endsWith(File.separator)) pathName = pathName + File.separator;
 		
 		
 		

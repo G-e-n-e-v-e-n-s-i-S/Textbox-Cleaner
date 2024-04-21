@@ -5,10 +5,16 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 
 
@@ -60,23 +66,35 @@ public class StartClass
 		
 		
 		
-		String desktopPath = System.getProperty("user.home") + "/Desktop/";
-		
-		desktopPath = desktopPath.replace("\\", "/");
-		
-		GUI.addLabeledTextField(container,  0, "Folder Path :", desktopPath);
-		
-		GUI.addLabeledComboBox(container,  1, "Text Color :", new String[] {"Black", "White"});
-		
-		GUI.addLabeledTextField(container,  2, "Save Path :", desktopPath + "Result.png");
+		String desktopPath = System.getProperty("user.home") + File.separator + "Desktop" + File.separator;
 		
 		
 		
-		CleanButtonListener listener = new CleanButtonListener();
+		JTextField loadText = GUI.addLabeledTextField(container, 0, 0, "Folder Path :", desktopPath, true, 0, 6);
 		
-		JButton button = GUI.addButton(container, GUI.createConstraints(0, 3, 120, 20, 4, 1), "Clean Textboxes", listener);
 		
-		listener.button = button;
+		
+		GUI.addLabeledComboBox(container, 1, "Text Color :", new String[] {"Black", "White"});
+		
+		GUI.addVoid(container, GUI.createConstraints(4, 1, 60, 10, 1, 1));
+		
+		JComboBox<String> subfoldersComboBox = GUI.addLabeledComboBox(container, 5, 1, "Clean Subfolders :", new String[] {"No", "Yes"}, true, 50, 1);
+		
+		
+		
+		JTextField saveText = GUI.addLabeledTextField(container, 0, 2, "Save Path :", desktopPath + "Cleaner Result.png", true, 0, 6);
+		
+		
+		
+		JButton button = GUI.addButton(container, GUI.createConstraints(0, 3, 120, 20, 7, 1), "Clean Textboxes");
+		
+		
+		
+		subfoldersComboBox.addActionListener(new SubfolderComboBoxListener(subfoldersComboBox, loadText, saveText));
+		
+		loadText.getDocument().addDocumentListener(new LoadTextListener(subfoldersComboBox, loadText, saveText));
+		
+		button.addActionListener(new CleanButtonListener(button));
 		
 		
 		
@@ -103,6 +121,13 @@ public class StartClass
 		
 		JButton button;
 		
+		public CleanButtonListener(JButton button)
+		{
+			
+			this.button = button;
+			
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent event)
 		{
@@ -121,12 +146,14 @@ public class StartClass
 			
 			String textColor = GUI.findComboBoxFromLabel(components, "Text Color :");
 			
+			String cleanSubfolders = GUI.findComboBoxFromLabel(components, "Clean Subfolders :");
+			
 			String savePath = GUI.findTextFromLabel(components, "Save Path :");
 			
 			try
 			{
 				
-				new CleanerWorker(loadPath, textColor, savePath).execute();
+				new CleanerWorker(loadPath, textColor, cleanSubfolders, savePath).execute();
 				
 			} catch (Exception e) {}
 			
@@ -134,7 +161,132 @@ public class StartClass
 			
 		}
 	}
+	
+	
+	
+	static class SubfolderComboBoxListener implements ActionListener
+	{
+		
+		JComboBox<String> subfolderComboBox;
+		
+		JTextField loadTextField;
+		
+		JTextField saveTextField;
+		
+		public SubfolderComboBoxListener(JComboBox<String> subfolderComboBox, JTextField loadTextField, JTextField saveTextField)
+		{
+			
+			this.subfolderComboBox = subfolderComboBox;
+			
+			this.loadTextField = loadTextField;
+			
+			this.saveTextField = saveTextField;
+			
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent event)
+		{
+			
+			if (String.valueOf(subfolderComboBox.getSelectedItem()).equals("Yes"))
+			{
+				
+				saveTextField.setEditable(false);
+				
+				String loadTextFieldString = loadTextField.getText();
+				
+				if (!loadTextFieldString.endsWith(File.separator))
+				{
+					
+					loadTextFieldString = loadTextFieldString + File.separator;
+					
+					loadTextField.setText(loadTextFieldString);
+					
+				}
+				
+				saveTextField.setText(loadTextFieldString + Cleaner.saveFolderName + File.separator);
+				
+			}
+			
+			else
+			{
+				
+				saveTextField.setEditable(true);
+				
+				String saveTextFieldString = saveTextField.getText();
+				
+				if (saveTextFieldString.endsWith(Cleaner.saveFolderName + File.separator))
+				{
+					
+					saveTextFieldString = saveTextFieldString.replaceAll(Cleaner.saveFolderName + Pattern.quote(File.separator) + "$", "Cleaner Result.png");
+					
+				}
+				
+				saveTextField.setText(saveTextFieldString);
+				
+			}
+		}
+	}
+	
+	
+	
+	static class LoadTextListener implements DocumentListener
+	{
+		
+		JComboBox<String> subfolderComboBox;
+		
+		JTextField loadTextField;
+		
+		JTextField saveTextField;
+		
+		public LoadTextListener(JComboBox<String> subfolderComboBox, JTextField loadTextField, JTextField saveTextField)
+		{
+			
+			this.subfolderComboBox = subfolderComboBox;
+			
+			this.loadTextField = loadTextField;
+			
+			this.saveTextField = saveTextField;
+			
+		}
+		
+		@Override
+		public void insertUpdate(DocumentEvent e)
+		{
+			
+			changedUpdate(e);
+			
+		}
+		
+		@Override
+		public void removeUpdate(DocumentEvent e)
+		{
+			
+			changedUpdate(e);
+			
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent e)
+		{
+			
+			if (String.valueOf(subfolderComboBox.getSelectedItem()).equals("Yes"))
+			{
+				
+				saveTextField.setEditable(false);
+				
+				String loadTextFieldString = loadTextField.getText();
+				
+				if (!loadTextFieldString.endsWith(File.separator))
+				{
+					
+					loadTextFieldString = loadTextFieldString + File.separator;
+					
+				}
+				
+				saveTextField.setText(loadTextFieldString + Cleaner.saveFolderName + File.separator);
+				
+			}
+		}
+	}
 }
-
-
-

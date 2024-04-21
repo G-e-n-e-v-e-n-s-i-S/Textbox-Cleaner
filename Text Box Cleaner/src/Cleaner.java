@@ -1,3 +1,11 @@
+/*
+ *	Removes the text from textboxes of the PNG images in the folder specified in 'loadPath'
+ *	Optionally, does the same in subfolders
+ *	Saves the images in a sub folder of the 'loadPath', or a given path
+*/
+
+
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -5,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingWorker;
@@ -20,6 +29,10 @@ public class Cleaner
 	
 	
 	
+	static String saveFolderName = "Textbox Cleaner Results";
+	
+	
+	
 	
 	
 	public static void main(String[] args) throws Exception
@@ -27,46 +40,25 @@ public class Cleaner
 		
 		logToConsole = true;
 		
-		bulkClean("D:/MTG Galleries/Karlov Manor/", "Black");
+		clean("D:\\MTG Galleries\\murders at karlov manor", "Black", "Yes", "D:\\MTG Galleries\\murders at karlov manor\\Textbox Cleaner Results");
 		
 	}
 	
 	
 	
-	
-	
-	public static void bulkClean(String folderPath, String textColor) throws Exception
+	public static void clean(String loadPath, String textColor, String cleanSubfoldersString, String savePath) throws Exception
 	{
 		
 		System.out.println(new Date().toString().substring(11, 20) + "  INFO:    Starting.");
 		
 		
 		
-		String savePath = (folderPath.endsWith("/") ? folderPath.substring(0, folderPath.length()-1) : folderPath) + " Results/";
-		
-		List<File> subFolders = loadFoldersInFolder(folderPath, 0);
-		
-		for (File folder : subFolders)
+		if (!loadPath.endsWith(File.separator))
 		{
 			
-			clean(folder.getAbsolutePath(), textColor, savePath + folder.getName() + ".png");
+			loadPath = loadPath + File.separator;
 			
 		}
-
-		
-		
-		System.gc();
-		
-		System.out.println(new Date().toString().substring(11, 20) + "  INFO:    Done.");
-		
-	}
-	
-	
-	
-	public static void clean(String loadPath, String textColor, String savePath) throws Exception
-	{
-		
-		System.out.println(new Date().toString().substring(11, 20) + "  INFO:    Starting.");
 		
 		
 		
@@ -86,22 +78,131 @@ public class Cleaner
 		
 		
 		
+		//Parse subfolders
+		boolean cleanSubfolders = false;
+		
+		if (cleanSubfoldersString.equals("Yes")) cleanSubfolders = true;
+		
+		else if (!cleanSubfoldersString.equals("No"))
+		{
+			
+			log("Could not interpret clean subfolders ' " + cleanSubfoldersString + " '.", Color.red, "image");
+			
+			return;
+			
+		}
+		
+		
+		
 		//Do the thing we're here for
-		List<BufferedImage> images = loadImagesInFolder(loadPath, true);
+		if (cleanSubfolders)
+		{
+			
+			if (!savePath.endsWith(File.separator))
+			{
+				
+				savePath = savePath + File.separator;
+				
+			}
+			
+			
+			
+			List<File> subFolders = loadFoldersInFolder(loadPath, -1);
+			
+			for (int i = 0; i < subFolders.size(); i++)
+			{
+				
+				 if (subFolders.get(i).getAbsolutePath().replace(loadPath, "").contains(saveFolderName))
+				 {
+					 
+					 subFolders.remove(i);
+					 
+					 i--;
+					 
+				 }
+			}
+			
+			
+			
+			String loadFolderName = loadPath.replaceAll(".*" + Pattern.quote(File.separator) + "([^" + Pattern.quote(File.separator) + "]+)" + Pattern.quote(File.separator) + "$", "$1.png");
+			
+			cleanFolder(loadPath, textIsBlack, savePath + loadFolderName, false);
+			
+			
+			
+			for (int i = 0; i < subFolders.size(); i++)
+			{
+				System.out.println(subFolders.get(i));
+				
+			}
+			for (File folder : subFolders)
+			{
+				
+				String folderPath = folder.getAbsolutePath();
+				
+				String folderSavePath = folderPath.replace(loadPath, savePath);
+				
+				cleanFolder(folderPath, textIsBlack, folderSavePath + ".png", false);
+				
+			}
+		}
 		
-		if (images == null) return;
-		
-		BufferedImage result = getExtremePixels(images, textIsBlack);
-		
-		if (result == null) return;
-		
-		saveImage(result, "", savePath);
+		else
+		{
+			
+			cleanFolder(loadPath, textIsBlack, savePath, true);
+			
+		}
 		
 		
 		
 		System.gc();
 		
 		System.out.println(new Date().toString().substring(11, 20) + "  INFO:    Done.");
+		
+	}
+	
+	
+	
+	public static void cleanFolder(String loadPath, boolean textIsBlack, String savePath, boolean warnIfEmpty) throws Exception
+	{
+		
+		List<BufferedImage> images = loadImagesInFolder(loadPath);
+		
+		if (images == null) return;
+		
+		
+		
+		int count = images.size();
+		
+		if (count == 0)
+		{
+			
+			if (warnIfEmpty)
+			{
+				
+				log("Couldn't find any png images in specified folder", Color.red, "folder");
+			
+			}
+			
+			return;
+				
+		}
+		
+		else
+		{
+			
+			log(images.size() + " png images loaded succesfully", Color.black, "folder");
+			
+		}
+		
+		
+		
+		BufferedImage result = getExtremePixels(images, textIsBlack);
+		
+		if (result == null) return;
+		
+		saveImage(result, "", savePath);
 		
 	}
 	
@@ -238,7 +339,7 @@ public class Cleaner
 	public static List<File> loadFoldersInFolder(String pathName, int getInSubFolders)
 	{
 		
-		if (!pathName.endsWith("/")) pathName = pathName +"/";
+		if (!pathName.endsWith(File.separator)) pathName = pathName + File.separator;
 		
 		
 		
@@ -283,7 +384,7 @@ public class Cleaner
 	
 	
 	
-	public static List<BufferedImage> loadImagesInFolder(String folderAbsolutePath, boolean loadSubFolders)
+	public static List<BufferedImage> loadImagesInFolder(String folderAbsolutePath)
 	{
 		
 		List<BufferedImage> images = new ArrayList<BufferedImage>();
@@ -311,13 +412,6 @@ public class Cleaner
 				
 				File file = files[f];
 				
-				if (loadSubFolders && file.isDirectory())
-				{
-					
-					images.addAll(loadImagesInFolder(file.getAbsolutePath(), true));
-					
-				}
-				
 				if (file.getName().endsWith(".png"))
 				{
 					
@@ -336,23 +430,7 @@ public class Cleaner
 				
 		}
 		
-		int count = images.size();
 		
-		if (count == 0)
-		{
-			
-			log("Couldn't find any png images in specified folder", Color.red, "folder");
-			
-			return null;
-				
-		}
-		
-		else
-		{
-			
-			log(images.size() + " png images loaded succesfully", Color.black, "folder");
-			
-		}
 		
 		return images;
 		
@@ -365,21 +443,21 @@ public class Cleaner
 	public static void saveImage(BufferedImage image, String folderAbsolutePath, String fileName)
 	{
 		
-		if (!folderAbsolutePath.equals("") && !folderAbsolutePath.endsWith("/")) folderAbsolutePath = folderAbsolutePath + "/";
+		if (!folderAbsolutePath.equals("") && !folderAbsolutePath.endsWith(File.separator)) folderAbsolutePath = folderAbsolutePath + File.separator;
 		
 		if (!fileName.endsWith(".png")) fileName = fileName + ".png";
 		
-		if (fileName.contains("/"))
+		if (fileName.contains(File.separator))
 		{
 			
-			String[] path = fileName.split("/");
+			String[] path = fileName.split(Pattern.quote(File.separator));
 			
 			fileName = path[path.length-1];
 			
 			for (int i = 0; i < path.length-1; i++)
 			{
 				
-				folderAbsolutePath = folderAbsolutePath + path[i] + "/";
+				folderAbsolutePath = folderAbsolutePath + path[i] + File.separator;
 				
 			}
 		}
@@ -473,14 +551,18 @@ class CleanerWorker extends SwingWorker<Integer, Integer>
 	
 	String textColor;
 	
+	String cleanSubfolders;
+	
 	String savePath;
 	
-	CleanerWorker(String loadPath, String textColor, String savePath)
+	CleanerWorker(String loadPath, String textColor, String cleanSubfolders, String savePath)
 	{ 
 		
 		this.loadPath = loadPath;
 		
 		this.textColor = textColor;
+		
+		this.cleanSubfolders = cleanSubfolders;
 		
 		this.savePath = savePath;
 		
@@ -490,7 +572,7 @@ class CleanerWorker extends SwingWorker<Integer, Integer>
     protected Integer doInBackground() throws Exception
     {
 		
-		Cleaner.clean(loadPath, textColor, savePath);
+		Cleaner.clean(loadPath, textColor, cleanSubfolders, savePath);
     	
     	return 0;
     	
