@@ -8,12 +8,11 @@ Download many renders of the same frame, but with different text. (Different car
 
 Specify the folder containing the renders you downloaded.
 
-Define which color the text you want to remove is.
-If the card contains text of both colors, just run the program twice.
+Define which color the text you want to remove is. (If the card contains text of both colors, just run the program twice and patch the results together.)
 
 Decide if the program should also clean renders found in subfolders. Each subfolder will be cleaned separately.
 
 If subfolders should be cleaned, a new folder named "Textbox Cleaner Results" will be created in the base folder, and results will be stored there.
 Otherwise, you can manually specify where the result should be saved. This will overwrite any image at that location.
 
-Hit the "Clean Textboxes" button.
+Hit the "Clean Textboxes" button to run the program.
