@@ -12,7 +12,9 @@ Define which color the text you want to remove is. (If the card contains text of
 
 Decide if the program should also clean renders found in subfolders. Each subfolder will be cleaned separately.
 
-If subfolders should be cleaned, a new folder named "Textbox Cleaner Results" will be created in the base folder, and results will be stored there.
-Otherwise, you can manually specify where the result should be saved. This will overwrite any image at that location.
+If subfolders should be cleaned, the program will create a new folder named "Textbox Cleaner Results" inside the base folder, and store the results there.
+Otherwise, you can manually specify where the result should be saved.
+
+Any existing images found at these locations, will be overwritten!
 
 Hit the "Clean Textboxes" button to run the program.
