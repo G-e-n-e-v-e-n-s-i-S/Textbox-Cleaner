@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -15,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.plaf.FontUIResource;
 
 
 
@@ -39,6 +41,12 @@ public class StartClass
 	
 	static JLabel saveMessage;
 	
+	static JLabel saveNameMessage;
+	
+	
+	
+	static FontUIResource font = new javax.swing.plaf.FontUIResource("Arial",java.awt.Font.BOLD,20);
+	
 	
 	
 	
@@ -46,7 +54,7 @@ public class StartClass
 	public static void main(String[] args)
 	{
 		
-		GUI.setFont(new javax.swing.plaf.FontUIResource("Arial",java.awt.Font.BOLD,20));
+		GUI.setFont(font);
 		
 		
 		
@@ -70,19 +78,19 @@ public class StartClass
 		
 		
 		
-		JTextField loadText = GUI.addLabeledTextField(container, 0, 0, "Folder Path :", desktopPath, true, 0, 6);
+		JTextField loadText = GUI.addLabeledTextField(container, 0, 0, "Folder Path :", desktopPath, true, 100, 6);
 		
 		
 		
 		GUI.addLabeledComboBox(container, 1, "Text Color :", new String[] {"Black", "White"});
 		
-		GUI.addVoid(container, GUI.createConstraints(4, 1, 60, 10, 1, 1));
+		GUI.addVoid(container, GUI.createConstraints(4, 1, 120, 10, 1, 1));
 		
-		JComboBox<String> subfoldersComboBox = GUI.addLabeledComboBox(container, 5, 1, "Clean Subfolders :", new String[] {"No", "Yes"}, true, 50, 1);
+		JComboBox<String> subfoldersComboBox = GUI.addLabeledComboBox(container, 5, 1, "Clean Subfolders :", new String[] {"No", "Yes"}, true, 80, 1);
 		
 		
 		
-		JTextField saveText = GUI.addLabeledTextField(container, 0, 2, "Save Path :", desktopPath + "Cleaner Result.png", true, 0, 6);
+		JTextField saveText = GUI.addLabeledTextField(container, 0, 2, "Save Path :", desktopPath + "Textbox Cleaner Result.png", true, 0, 6);
 		
 		
 		
@@ -98,11 +106,13 @@ public class StartClass
 		
 		
 		
-		folderMessage = GUI.addLabel(container, GUI.createConstraints(0, 4, 120, 10, 4, 1), "");
+		folderMessage = GUI.addLabel(container, GUI.createConstraints(0, 4, 120, 10, 7, 1), "");
 		
-		imageMessage = GUI.addLabel(container, GUI.createConstraints(0, 5, 120, 10, 4, 1), "");
+		imageMessage = GUI.addLabel(container, GUI.createConstraints(0, 5, 120, 10, 7, 1), "");
 		
-		saveMessage = GUI.addLabel(container, GUI.createConstraints(0, 6, 120, 10, 4, 1), "");
+		saveMessage = GUI.addLabel(container, GUI.createConstraints(0, 6, 120, 10, 7, 1), "");
+		
+		saveNameMessage = GUI.addLabel(container, GUI.createConstraints(0, 7, 0, 10, 7, 1), "");
 		
 		
 		
@@ -139,6 +149,16 @@ public class StartClass
 			imageMessage.setText("");
 			
 			saveMessage.setText("");
+			
+			saveNameMessage.setText("");
+			
+			folderMessage.setForeground(Color.black);
+			
+			imageMessage.setForeground(Color.black);
+			
+			saveMessage.setForeground(Color.black);
+			
+			saveNameMessage.setForeground(Color.black);
 			
 			Component[] components = window.getContentPane().getComponents();
 			
@@ -218,7 +238,7 @@ public class StartClass
 				if (saveTextFieldString.endsWith(Cleaner.saveFolderName + File.separator))
 				{
 					
-					saveTextFieldString = saveTextFieldString.replaceAll(Cleaner.saveFolderName + Pattern.quote(File.separator) + "$", "Cleaner Result.png");
+					saveTextFieldString = saveTextFieldString.replaceAll(Cleaner.saveFolderName + Pattern.quote(File.separator) + "$", "Textbox Cleaner Result.png");
 					
 				}
 				
@@ -284,7 +304,9 @@ public class StartClass
 					
 				}
 				
-				saveTextField.setText(loadTextFieldString + Cleaner.saveFolderName + File.separator);
+				String saveTextFieldString = loadTextFieldString + Cleaner.saveFolderName + File.separator;
+				
+				saveTextField.setText(saveTextFieldString);
 				
 			}
 		}
