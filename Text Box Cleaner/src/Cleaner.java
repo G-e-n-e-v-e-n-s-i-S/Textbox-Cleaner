@@ -43,14 +43,14 @@ public class Cleaner
 	
 	
 	
-	public static void main(String[] args) throws Exception
-	{
-		
-		logToConsole = true;
-		
-		clean("D:\\MTG Galleries\\murders at karlov manor", "Black", "Yes", "D:\\MTG Galleries\\murders at karlov manor\\Textbox Cleaner Results");
-		
-	}
+	//public static void main(String[] args) throws Exception
+	//{
+	//	
+	//	logToConsole = true;
+	//	
+	//	clean("D:\\MTG Galleries\\murders at karlov manor", "Black", "Yes", "D:\\MTG Galleries\\murders at karlov manor\\Textbox Cleaner Results");
+	//	
+	//}
 	
 	
 	
@@ -86,7 +86,7 @@ public class Cleaner
 		else if (!textColor.equals("White"))
 		{
 			
-			log("Could not interpret text color ' " + textColor + " '.", Color.red, "image");
+			log("Could not interpret text color ' " + textColor + " '.", Color.red, "logic");
 			
 			return;
 			
@@ -102,7 +102,7 @@ public class Cleaner
 		else if (!cleanSubfoldersString.equals("No"))
 		{
 			
-			log("Could not interpret clean subfolders ' " + cleanSubfoldersString + " '.", Color.red, "image");
+			log("Could not interpret clean subfolders ' " + cleanSubfoldersString + " '.", Color.red, "logic");
 			
 			return;
 			
@@ -163,21 +163,21 @@ public class Cleaner
 			
 			
 			
-			log(loadCount + (loadCount != 1 ? " total PNG images" : " PNG image") + " loaded.", Color.black, "folder");
+			log(loadCount + (loadCount != 1 ? " total PNG images" : " PNG image") + " loaded.", Color.black, "load");
 			
 			
 			
 			if (failCount > 0)
 			{
 				
-				log(failCount + " result" + (failCount > 1 ? "s" : "") + " could not be saved.", Color.red, "image");
+				log(failCount + " result" + (failCount > 1 ? "s" : "") + " could not be saved.", Color.red, "logic");
 				
 			}
 			
 			else
 			{
 				
-				log("", Color.black, "image");
+				log("", Color.black, "logic");
 				
 			}
 			
@@ -236,7 +236,7 @@ public class Cleaner
 			if (warnIfEmpty)
 			{
 				
-				log("Couldn't find any png images in specified folder", Color.red, "folder");
+				log("Couldn't find any png images in specified folder", Color.red, "load");
 			
 			}
 			
@@ -249,7 +249,7 @@ public class Cleaner
 			
 			loadCount += count;
 			
-			log(images.size() + " png images loaded successfully", Color.black, "folder");
+			log(images.size() + " png images loaded successfully", Color.black, "load");
 			
 		}
 		
@@ -306,7 +306,7 @@ public class Cleaner
 			if (image.getWidth() != width || image.getHeight() != height)
 			{
 				
-				log("Images are not all of the exact same dimensions", Color.red, "image");
+				log("Images are not all of the exact same dimensions", Color.red, "logic");
 				
 				return null;
 				
@@ -366,7 +366,7 @@ public class Cleaner
 			}
 		}
 		
-		log("Textboxes cleaned successfully", Color.black, "image");
+		log("Textboxes cleaned successfully", Color.black, "logic");
 		
 		return result;
 		
@@ -433,7 +433,7 @@ public class Cleaner
 		if (!folder.isDirectory())
 		{
 			
-			log("Specified path ' " + folderPath + " ' is not a folder", Color.red, "folder");
+			log("Specified path ' " + folderPath + " ' is not a folder", Color.red, "load");
 			
 			return returnedFolders;
 			
@@ -478,7 +478,7 @@ public class Cleaner
 			if (!folder.exists() || !folder.isDirectory())
 			{
 				
-				log("No folder found at specified path", Color.red, "folder");
+				log("No folder found at specified path", Color.red, "load");
 				
 				return null;
 				
@@ -505,7 +505,7 @@ public class Cleaner
 		} catch (IOException e)
 		{
 			
-			log("Couldn't load png images from specified folder", Color.red, "folder");
+			log("Couldn't load png images from specified folder", Color.red, "load");
 			
 			return null;
 				
@@ -605,25 +605,25 @@ public class Cleaner
 				
 			}
 			
-			if (out.equals("folder"))
+			if (out.equals("load"))
 			{
 				
-				if (!color.equals(Color.red) && Launcher.folderMessage.getForeground().equals(Color.red)) return;
+				if (!color.equals(Color.red) && Launcher.loadMessage.getForeground().equals(Color.red)) return;
 				
-				Launcher.folderMessage.setText(text);
+				Launcher.loadMessage.setText(text);
 				
-				Launcher.folderMessage.setForeground(color);
+				Launcher.loadMessage.setForeground(color);
 				
 			}
 			
-			else if (out.equals("image"))
+			else if (out.equals("logic"))
 			{
 				
-				if (!color.equals(Color.red) && Launcher.imageMessage.getForeground().equals(Color.red)) return;
+				if (!color.equals(Color.red) && Launcher.logicMessage.getForeground().equals(Color.red)) return;
 				
-				Launcher.imageMessage.setText(text);
+				Launcher.logicMessage.setText(text);
 				
-				Launcher.imageMessage.setForeground(color);
+				Launcher.logicMessage.setForeground(color);
 				
 			}
 			
