@@ -54,7 +54,7 @@ public class Cleaner
 	
 	
 	
-	public static void clean(String loadFolderPath, String textColor, String cleanSubfoldersString, String savePath) throws Exception
+	public static void clean(String loadFolderPath, String textColor, String cleanSubfoldersString, String savePath)
 	{
 		
 		System.out.println(new Date().toString().substring(11, 20) + "  INFO:    Starting.");
@@ -163,7 +163,7 @@ public class Cleaner
 			
 			
 			
-			log(loadCount + (loadCount != 1 ? " total PNG images" : " PNG image") + " loaded", Color.black, "folder");
+			log(loadCount + (loadCount != 1 ? " total PNG images" : " PNG image") + " loaded.", Color.black, "folder");
 			
 			
 			
@@ -219,7 +219,7 @@ public class Cleaner
 	
 	
 	
-	public static boolean cleanFolder(String loadFolderPath, boolean textIsBlack, String savePath, boolean warnIfEmpty) throws Exception
+	public static boolean cleanFolder(String loadFolderPath, boolean textIsBlack, String savePath, boolean warnIfEmpty)
 	{
 		
 		List<BufferedImage> images = loadImagesInFolder(loadFolderPath);
@@ -687,7 +687,7 @@ class CleanerWorker extends SwingWorker<Integer, Integer>
     }
 	
 	@Override
-    protected Integer doInBackground() throws Exception
+    protected Integer doInBackground()
     {
 		
 		Cleaner.clean(loadFolderPath, textColor, cleanSubfolders, savePath);

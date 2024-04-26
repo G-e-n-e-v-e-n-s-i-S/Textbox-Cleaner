@@ -25,27 +25,27 @@ public class StartClass
 	
 	
 	
-	static JFrame window;
+	public static JFrame window;
 	
-	static Container container;
-	
-	
-	
-	static Dimension screenSize;
+	public static Container container;
 	
 	
 	
-	static JLabel folderMessage;
-	
-	static JLabel imageMessage;
-	
-	static JLabel saveMessage;
-	
-	static JLabel saveNameMessage;
+	public static Dimension screenSize;
 	
 	
 	
-	static FontUIResource font = new javax.swing.plaf.FontUIResource("Arial",java.awt.Font.BOLD,20);
+	public static JLabel folderMessage;
+	
+	public static JLabel imageMessage;
+	
+	public static JLabel saveMessage;
+	
+	public static JLabel saveNameMessage;
+	
+	
+	
+	public static FontUIResource font = new javax.swing.plaf.FontUIResource("Arial",java.awt.Font.BOLD,20);
 	
 	
 	
@@ -134,6 +134,8 @@ public class StartClass
 		public CleanButtonListener(JButton button)
 		{
 			
+			super();
+			
 			this.button = button;
 			
 		}
@@ -170,12 +172,11 @@ public class StartClass
 			
 			String savePath = GUI.findTextFromLabel(components, "Save Path :");
 			
-			try
-			{
-				
-				new CleanerWorker(loadPath, textColor, cleanSubfolders, savePath).execute();
-				
-			} catch (Exception e) {}
+			
+			
+			new CleanerWorker(loadPath, textColor, cleanSubfolders, savePath).execute();
+			
+			
 			
 			button.setEnabled(true);
 			
@@ -195,6 +196,8 @@ public class StartClass
 		
 		public SubfolderComboBoxListener(JComboBox<String> subfolderComboBox, JTextField loadTextField, JTextField saveTextField)
 		{
+			
+			super();
 			
 			this.subfolderComboBox = subfolderComboBox;
 			
@@ -261,6 +264,8 @@ public class StartClass
 		
 		public LoadTextListener(JComboBox<String> subfolderComboBox, JTextField loadTextField, JTextField saveTextField)
 		{
+			
+			super();
 			
 			this.subfolderComboBox = subfolderComboBox;
 			
