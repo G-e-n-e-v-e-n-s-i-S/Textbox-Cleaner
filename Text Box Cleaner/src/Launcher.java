@@ -20,7 +20,7 @@ import javax.swing.plaf.FontUIResource;
 
 
 
-public class StartClass
+public class Launcher
 {
 	
 	
